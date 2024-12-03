@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from "react-router-dom";
 import axios from 'axios';
-import { AuthProvider } from './components/AuthContext';
+import { AuthProvider } from './components/context/AuthContext';
 
 
 axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;

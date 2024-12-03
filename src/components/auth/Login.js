@@ -5,7 +5,7 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from 'axios';
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "../context/AuthContext";
 
 
 const initialValues = {
@@ -24,11 +24,11 @@ const validationSchema = Yup.object({
 
     password: Yup.string()
         .required('required')
-        // .min(6, 'Password Incorrect')
-        // .matches(/[0-9]/, 'Password Incorrect')
-        // .matches(/[a-z]/, 'Password Incorrect')
-        // .matches(/[A-Z]/, 'Password Incorrect')
-        // .matches(/[^\w]/, 'Password Incorrect')
+        .min(6, 'Password Incorrect')
+        .matches(/[0-9]/, 'Password Incorrect')
+        .matches(/[a-z]/, 'Password Incorrect')
+        .matches(/[A-Z]/, 'Password Incorrect')
+        .matches(/[^\w]/, 'Password Incorrect')
 });
 
 export default function Login() {

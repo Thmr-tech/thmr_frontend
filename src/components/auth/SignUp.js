@@ -73,7 +73,7 @@ export default function SignUp() {
             navigate('/login');
         } catch (error) {
             if (error.response && error.response.data) {
-                setErrors(error.response.data);
+                setErrors(error.response);
             }
         }
     };

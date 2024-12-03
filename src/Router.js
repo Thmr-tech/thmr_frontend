@@ -1,13 +1,13 @@
 import React from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import Home from "./components/Home";
-import SignUp from "./components/SignUp";
-import Login from "./components/Login";
+import Home from "./components/pages/Home";
+import SignUp from "./components/auth/SignUp";
+import Login from "./components/auth/Login";
 import Header from "./components/Header";
-import PasswordForget from "./components/PasswordForget";
-import PasswordReset from "./components/PasswordReset";
-import AccountActivate from "./components/AccountActivate";
-import TodoPage from "./components/TodoPage";
+import PasswordForget from "./components/auth/PasswordForget";
+import PasswordReset from "./components/auth/PasswordReset";
+import AccountActivate from "./components/auth/AccountActivate";
+import TodoPage from "./components/pages/TodoPage";
 
 const Router = () => {
     const location = useLocation();
