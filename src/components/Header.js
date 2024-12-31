@@ -1,58 +1,103 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from './context/AuthContext';
-import axios from 'axios';
-
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
+import logo from "../assets/images/logo.png";
 
 export default function Header() {
-    const { authToken, logout } = useContext(AuthContext);
-    const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    const handleLogout = async () => {
-        try {
-            await axios.post('auth/token/logout', null, {
-                headers: { 'Authorization': `Token ${authToken}` }
-            });
-            logout();
-            navigate("/");
-        } catch (error) {
-            if (error.response && error.response.data) {
-                console.log(error.response.data);
-            }
-        }
-    };
+    const { user, signOutUser } = useAuth();
 
     return (
-        <div className="flex justify-between items-center px-4 py-4 md:px-16 lg:px-24 xl:px-48">
-            <Link to="/" className="text-3xl font-extrabold text-blue-700 tracking-wider drop-shadow-lg">To Do</Link>
+        <div className="absolute z-10 w-full px-10 py-0 lg:py-5">
+            <div className="relative flex justify-between items-center">
+                <Link to="/" className="pt-3">
+                    <img src={logo} className="w-[180px]" />
+                </Link>
 
-            {/* Burger Icon */}
-            <button
-                className="md:hidden text-2xl"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-                ☰
-            </button>
+                <div className="hidden gap-6 text-white lg:flex">
+                    <NavLink to="/aboutus"
+                        className={({ isActive }) =>
+                            `hover:text-customBlue hover:border-b-2 border-customBlue pb-1 ${isActive ? "text-customBlue border-b-2 border-customBlue" : ""
+                            }`
+                        }>
+                        من نحن
+                    </NavLink>
+                    <NavLink to="/blog"
+                        className={({ isActive }) =>
+                            `hover:text-customBlue hover:border-b-2 border-customBlue pb-1 ${isActive ? "text-customBlue border-b-2 border-customBlue" : ""
+                            }`
+                        }>
+                        المدونة
+                    </NavLink>
+                    <NavLink to="/"
+                        className={({ isActive }) =>
+                            `hover:text-customBlue hover:border-b-2 border-customBlue pb-1 ${isActive ? "text-customBlue border-b-2 border-customBlue" : ""
+                            }`
+                        }>
+                        الرئيسية
+                    </NavLink>
+                </div>
 
-            {/* Dropdown Menu */}
-            <ul
-                className={`${isMenuOpen ? 'flex' : 'hidden'
-                    } absolute right-4 top-12 bg-white shadow-lg flex-col p-3 text-center md:flex-row md:justify-center md:bg-transparent md:shadow-none md:flex md:static md:gap-3`}
-            >
-                {authToken ? (
-                    <>
-                        <Link className="md:border-2 md:border-black md:border-solid md:p-2 md:rounded-md md:font-['Roboto'] md:cursor-pointer" to="/todos">My To Do</Link>
-                        <Link className="md:border-2 md:border-black md:border-solid md:p-2 md:rounded-md md:font-['Roboto'] md:cursor-pointer" to="/">Profile</Link>
-                        <Link className="md:border-2 md:border-black md:border-solid md:p-2 md:rounded-md md:font-['Roboto'] md:cursor-pointer" onClick={handleLogout}>Log out</Link>
-                    </>
-                ) : (
-                    <>
-                        <Link to="/register" className="md:border-2 md:border-black md:border-solid md:p-2 md:rounded-md md:font-['Roboto'] md:cursor-pointer">Sign Up</Link>
-                        <Link to="/login" className="md:border-2 md:border-black md:border-solid md:p-2 md:rounded-md md:font-['Roboto'] md:cursor-pointer">Log in</Link>
-                    </>
-                )}
-            </ul>
+                {/* Burger Icon */}
+                <button
+                    className="text-2xl flex justify-center items-center px-4 py-4 text-white lg:hidden"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                    {isMenuOpen ? "✕" : "☰"}
+                </button>
+
+                {/* Dropdown Menu */}
+                <div
+                    className={`${isMenuOpen ? "flex" : "hidden"
+                        } absolute w-full font-bold shadow-lg flex-col p-3 text-center rounded-xl bg-[#00ceca] z-10 top-20 gap-3 lg:static lg:flex lg:flex-row lg:shadow-none lg:bg-transparent lg:w-auto lg:p-0`}
+                >
+                    {user ? (
+                        <>
+                            <Link to="/blog" className="lg:p-2 lg:hidden">
+                                الرئيسية
+                            </Link>
+                            <hr />
+                            <Link to="/aboutus" className="lg:p-2 lg:hidden">
+                                من نحن
+                            </Link>
+                            <hr />
+                            <Link to="/blog" className="lg:p-2 lg:hidden">
+                                المدونة
+                            </Link>
+                            <hr />
+                            <Link to="/profile" className="lg:text-white">
+                                حسابي
+                            </Link>
+                            <hr />
+                            <button onClick={signOutUser} className="lg:text-white">
+                                تسجيل خروج
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/blog" className="lg:p-2 lg:hidden">
+                                الرئيسية
+                            </Link>
+                            <hr />
+                            <Link to="/aboutus" className="lg:p-2 lg:hidden">
+                                من نحن
+                            </Link>
+                            <hr />
+                            <Link to="/blog" className="lg:p-2 lg:hidden">
+                                المدونة
+                            </Link>
+                            <hr />
+                            <Link to="/login" className="lg:text-white">
+                                تسجيل الدخول
+                            </Link>
+                            <hr />
+                            <Link to="/register" className="lg:text-white">
+                                التسجيل
+                            </Link>
+                        </>
+                    )}
+                </div>
+            </div>
         </div>
-    )
+    );
 }

@@ -4,14 +4,12 @@ import Home from "./components/pages/Home";
 import SignUp from "./components/auth/SignUp";
 import Login from "./components/auth/Login";
 import Header from "./components/Header";
-import PasswordForget from "./components/auth/PasswordForget";
-import PasswordReset from "./components/auth/PasswordReset";
-import AccountActivate from "./components/auth/AccountActivate";
-import TodoPage from "./components/pages/TodoPage";
+import AboutUs from "./components/pages/AboutUs";
+import Blog from "./components/Blog";
 
 const Router = () => {
     const location = useLocation();
-    const showHeader = !(location.pathname === '/register' || location.pathname === '/login' || location.pathname === '/forget-password' || location.pathname === '/password/reset/confirm/:uid/:token');
+    const showHeader = !(location.pathname === '/register' || location.pathname === '/login');
 
     return (
         <div>
@@ -20,10 +18,8 @@ const Router = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/register" element={<SignUp />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/forget-password" element={<PasswordForget />} />
-                <Route path="/password/reset/confirm/:uid/:token" element={<PasswordReset />} />
-                <Route path="/activate/:uid/:token" element={<AccountActivate />} />
-                <Route path="/todos" element={<TodoPage />} />
+                <Route path="/aboutus" element={<AboutUs />} />
+                <Route path="/blog" element={<Blog />} />
             </Routes>
         </div>
     );

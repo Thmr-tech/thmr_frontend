@@ -4,22 +4,18 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from "react-router-dom";
-import axios from 'axios';
-import { AuthProvider } from './components/context/AuthContext';
-
-
-axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
+import { AuthProvider } from "./components/context/AuthContext";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Router>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
-    </Router>
-  </React.StrictMode>
+    <React.StrictMode>
+        <Router>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </Router>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
