@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }) => {
             await signOut(auth);
             setUser(null);
             toast.success("تم تسجيل الخروج بنجاح!");
+            navigate("/");
         } catch (error) {
             toast.error("حدث خطأ أثناء تسجيل الخروج.");
         }

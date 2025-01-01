@@ -41,11 +41,15 @@ export default function Footer() {
                 </div>
 
                 {/* Additional Links Section (Optional) */}
-                <div className="mt-6 border-t border-black pt-4 text-center">
+                <div className="my-6 pt-4 text-center">
                     <p className="text-white text-sm">
                         &copy; {new Date().getFullYear()} جميع الحقوق محفوظة
                     </p>
                 </div>
+                <hr />
+                <p className='text-white text-right text-xs mt-5' style={{direction:'rtl'}}>
+                    إن شركة حلول ثمر للتصميم هي شركة ذات مسؤولية محدودة مسجلة بالمملكة العربية السعودية وتعمل وفق أنظمتها وتهدف إلى تقديم حلول رقمية في النشاطات الإدارية والمالية الخاصة بالصناديق العائلية ولا تقدم أي مشورة أو توجيه في الأمور الخاصة بالصناديق. كما أن البنية النهائية لخدمات المنصة والتطبيق ليست بالضرورة ستكون متوفرة بالنموذج الاولي الذي نعمل على بنائه.
+                </p>
             </div>
         </footer>
     );
