@@ -8,7 +8,7 @@ export default function Header() {
     const { user, signOutUser } = useAuth();
 
     return (
-        <div className="absolute z-10 w-full px-4 py-3 max-w-screen-2xl mx-auto lg:py-5 lg:px-10">
+        <div className="absolute w-full max-w-[1890px] mx-auto z-10 px-4 py-3 lg:py-5 lg:px-10">
             <div className="relative flex justify-between items-center">
                 <Link to="/" className="w-[100px]">
                     <img alt="" src={logo} className="w-[90px] lg:w-[120px]" />

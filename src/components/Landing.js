@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function Landing() {
     return (
-        <div className="bg-cover bg-center bg-small_landing h-screen flex items-end justify-center lg:bg-landing lg:items-center lg:justify-end lg:bg-[-60px_0]">
+        <div className="bg-cover bg-center bg-small_landing h-screen flex items-end justify-center lg:bg-landing lg:items-center lg:justify-end lg:bg-[-21px_0]">
             <div className="hidden lg:flex items-center justify-center text-white text-center mb-[57px] flex-col gap-8 lg:items-end lg:mb-0 lg:pr-[120px] lg:text-right lg:text-black">
                 <p className="lg:block lg:text-customBlue lg:text-7xl lg:font-extrabold">ثمر</p>
                 <div className='lg:text-xl'>
@@ -21,4 +21,3 @@ export default function Landing() {
         </div>
     );
 }
-
