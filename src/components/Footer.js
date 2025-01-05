@@ -6,14 +6,14 @@ import logo from "../assets/images/logo.png";
 export default function Footer() {
 
     return (
-        <footer className="bg-[#969d9e] text-white py-8 rtl">
+        <footer className="text-white py-8 rtl">
             <div className="max-w-screen-xl mx-auto px-4">
                 {/* Flex container to hold sections */}
                 <div className="flex flex-col sm:flex-row-reverse justify-between items-center">
                     {/* Company Info Section */}
                     <div className="flex flex-col items-center sm:items-center mb-6 sm:mb-0">
                         <Link to="/" className="pt-3">
-                            <img src={logo} className="w-[180px]" />
+                            <img alt="" src={logo} className="w-[120px]" />
                         </Link>
                         <div className="mt-4 text-white text-center sm:text-center">
                             <p>الهاتف</p>
@@ -47,7 +47,7 @@ export default function Footer() {
                     </p>
                 </div>
                 <hr />
-                <p className='text-white text-right text-xs mt-5' style={{direction:'rtl'}}>
+                <p className='text-white text-right mt-5' style={{direction:'rtl'}}>
                     إن شركة حلول ثمر للتصميم هي شركة ذات مسؤولية محدودة مسجلة بالمملكة العربية السعودية وتعمل وفق أنظمتها وتهدف إلى تقديم حلول رقمية في النشاطات الإدارية والمالية الخاصة بالصناديق العائلية ولا تقدم أي مشورة أو توجيه في الأمور الخاصة بالصناديق. كما أن البنية النهائية لخدمات المنصة والتطبيق ليست بالضرورة ستكون متوفرة بالنموذج الاولي الذي نعمل على بنائه.
                 </p>
             </div>

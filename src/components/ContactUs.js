@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function ContactUs() {
     const [formData, setFormData] = useState({
@@ -10,6 +12,10 @@ export default function ContactUs() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formStatus, setFormStatus] = useState('');
+
+    useEffect(() => {
+        AOS.init();
+    }, []);
 
     // Handle form input change
     const handleInputChange = (e) => {
@@ -38,17 +44,16 @@ export default function ContactUs() {
         const success = await addPostToDB(formData);
 
         if (success) {
-            setFormStatus("Your message has been sent successfully!");
+            setFormStatus("شكرا على تواصلك مع ثمر . سيتم الرد عليك قريبا");
             setFormData({ name: "", email: "", message: "" }); // Reset the form
         } else {
-            setFormStatus("An error occurred. Please try again.");
+            setFormStatus("حدث خطأ غير متوقع . الرجاء المحاولة مرة اخرى");
         }
-
         setIsSubmitting(false);
     };
 
     return (
-        <div className='bg-background_logo bg-no-repeat'>
+        <div className='bg-background_logo bg-no-repeat' data-aos="fade-up" data-aos-duration="2000">
             <div className="max-w-4xl mx-auto p-6 rounded-md mt-20 pt-[217px]">
                 <h2 className="text-2xl font-semibold text-white text-center mb-6">تواصل معنا</h2>
                 <form onSubmit={handleSubmit}>
@@ -108,7 +113,7 @@ export default function ContactUs() {
 
                     {/* Form Status */}
                     {formStatus && (
-                        <div className="mt-4 text-center text-green-600 font-semibold">
+                        <div className="mt-4 text-center text-blue-700 font-semibold">
                             {formStatus}
                         </div>
                     )}

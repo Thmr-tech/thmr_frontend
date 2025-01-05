@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function AboutUs() {
     return (
-        <div className="py-10 px-5 text-right bg-[#969d9e] md:px-20" dir="rtl">
+        <div className="py-10 px-5 text-right md:px-20" dir="rtl">
             <div className="max-w-4xl mx-auto mt-28 bg-white shadow-lg rounded-lg p-8">
                 <h1 className="text-3xl font-extrabold text-customBlue text-center mb-6">من نحن؟</h1>
                 <p className="text-lg text-gray-700 leading-8 mb-6 font-bold">

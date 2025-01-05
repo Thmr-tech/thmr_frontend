@@ -1,9 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../context/AuthContext";
-import logo from "../../assets/images/logo2.png";
+import logo from "../../assets/images/logo.png";
 
 
 const initialValues = {
@@ -11,6 +11,7 @@ const initialValues = {
     email: "",
     password: "",
     password2: "",
+    Firebase: ''
 };
 
 const validationSchema = Yup.object({
@@ -29,16 +30,22 @@ const validationSchema = Yup.object({
 
 export default function SignUp() {
     const { signUp } = useAuth();
+    const navigate = useNavigate();
 
-    const onSubmit = async (values) => {
-        const { email, password, username } = values;
-        await signUp(email, password, username);
+    const onSubmit = async (values, { setErrors }) => {
+        try {
+            const { email, password, username } = values;
+            await signUp(email, password, username);
+            navigate("/login");
+        } catch (error) {
+            setErrors({ Firebase: error });
+        }
     };
 
     return (
         <div className="flex flex-col items-center mt-8 px-6">
             <Link to="/" className="pt-3 mb-[50px]">
-                <img src={logo} className="w-[180px]" />
+                <img alt="" src={logo} className="w-[120px]" />
             </Link>
 
             <Formik
@@ -48,7 +55,8 @@ export default function SignUp() {
                 validateOnChange={false}
                 validateOnBlur={false}
             >
-                <Form noValidate className="text-right flex flex-col gap-[20px] rounded-[1rem] border-[1px] w-[300px] px-7 py-7 mx-auto bg-[#fcfcfc]">
+                <Form noValidate className="text-right flex flex-col gap-[20px] rounded-[1rem] border-[1px] w-[330px] px-7 py-7 mx-auto bg-[#fcfcfc] mb-8">
+                    <p className="text-center font-bold mb-5 text-lg text-customBlue">إنشاء حساب</p>
                     <div>
                         <label htmlFor="username" className="text-sm font-medium">أسم المستخدم</label>
                         <Field type="text" id="username" name="username"
@@ -84,6 +92,10 @@ export default function SignUp() {
                             {(msg) => <div className="text-red-500">{msg}</div>}
                         </ErrorMessage>
                     </div>
+
+                    <ErrorMessage name="Firebase">
+                        {msg => <div className="text-red-500" style={{ direction: 'rtl' }}>{msg}</div>}
+                    </ErrorMessage>
 
                     <button
                         type="submit"

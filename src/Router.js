@@ -6,6 +6,8 @@ import Login from "./components/auth/Login";
 import Header from "./components/Header";
 import AboutUs from "./components/pages/AboutUs";
 import Blog from "./components/Blog";
+import UserProfile from "./components/UserProfile";
+import JobApplication from "./components/JobApplication";
 
 const Router = () => {
     const location = useLocation();
@@ -20,6 +22,8 @@ const Router = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/aboutus" element={<AboutUs />} />
                 <Route path="/blog" element={<Blog />} />
+                <Route path="/profile" element={<UserProfile />} />
+                <Route path="/jobs" element={<JobApplication />} />
             </Routes>
         </div>
     );

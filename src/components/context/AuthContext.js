@@ -1,10 +1,11 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     updateProfile,
     signInWithPopup,
+    onAuthStateChanged
 } from "firebase/auth";
 import { auth, provider } from "../firebase";
 import { toast } from "react-toastify";
@@ -20,11 +21,24 @@ const errorMessages = {
     "auth/user-not-found": "لم يتم العثور على مستخدم بهذا البريد الإلكتروني.",
     "auth/wrong-password": "كلمة المرور غير صحيحة.",
     "auth/network-request-failed": "فشل الاتصال بالشبكة. يرجى المحاولة مرة أخرى.",
+    "auth/invalid-credential": "اسم المستخدم او كلمة المرور غير صحيحه"
 };
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            if (currentUser) {
+                setUser(currentUser);
+            } else {
+                setUser(null);
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     const signUp = async (email, password, name) => {
         try {
@@ -37,13 +51,12 @@ export const AuthProvider = ({ children }) => {
 
             await updateProfile(createdUser, { displayName: name });
             setUser({ ...createdUser, displayName: name });
-            toast.success("تم التسجيل بنجاح!");
-            navigate("/login");
         } catch (error) {
             const errorMessage = errorMessages[error.code] || "حدث خطأ غير متوقع.";
-            toast.error(errorMessage);
+            throw errorMessage;
         }
     };
+
 
     const signIn = async (email, password) => {
         try {
@@ -53,11 +66,10 @@ export const AuthProvider = ({ children }) => {
                 password,
             );
             setUser(userCredential.user);
-            toast.success("تم تسجيل الدخول بنجاح!");
-            navigate("/");
         } catch (error) {
+            console.log(error)
             const errorMessage = errorMessages[error.code] || "حدث خطأ غير متوقع.";
-            toast.error(errorMessage);
+            throw errorMessage;
         }
     };
 
@@ -65,10 +77,9 @@ export const AuthProvider = ({ children }) => {
         try {
             await signOut(auth);
             setUser(null);
-            toast.success("تم تسجيل الخروج بنجاح!");
             navigate("/");
         } catch (error) {
-            toast.error("حدث خطأ أثناء تسجيل الخروج.");
+            console.log(error)
         }
     };
 

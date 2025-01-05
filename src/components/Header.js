@@ -8,39 +8,42 @@ export default function Header() {
     const { user, signOutUser } = useAuth();
 
     return (
-        <div className="absolute z-10 w-full px-2 py-0 lg:py-5 lg:px-10">
+        <div className="absolute z-10 w-full px-4 py-3 max-w-screen-2xl mx-auto lg:py-5 lg:px-10">
             <div className="relative flex justify-between items-center">
-                <Link to="/" className="pt-3 w-[140px]">
-                    <img src={logo} className="w-[180px]" />
+                <Link to="/" className="w-[100px]">
+                    <img alt="" src={logo} className="w-[90px] lg:w-[120px]" />
                 </Link>
 
-                <div className="hidden gap-6 text-white lg:flex">
-                    <NavLink to="/aboutus"
-                        className={({ isActive }) =>
-                            `hover:text-customBlue font-bold hover:border-b-2 border-customBlue pb-1 ${isActive ? "text-customBlue border-b-2 border-customBlue" : ""
-                            }`
-                        }>
+                <div className="hidden lg:gap-6 lg:text-white lg:flex">
+                    <NavLink to="/jobs" className={({ isActive }) =>
+                        `relative font-semibold hover:text-customBlue group ${isActive ? "text-customBlue" : ""}`}>
+                        الوظائف
+                        <span
+                            className="absolute left-0 right-0 -bottom-2 h-[2px] bg-customBlue scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
+                    </NavLink>
+                    <NavLink to="/aboutus" className={({ isActive }) =>
+                        `relative font-semibold hover:text-customBlue group ${isActive ? "text-customBlue" : ""}`}>
                         من نحن
+                        <span
+                            className="absolute left-0 right-0 -bottom-2 h-[2px] bg-customBlue scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                     </NavLink>
-                    <NavLink to="/blog"
-                        className={({ isActive }) =>
-                            `hover:text-customBlue font-bold hover:border-b-2 border-customBlue pb-1 ${isActive ? "text-customBlue border-b-2 border-customBlue" : ""
-                            }`
-                        }>
+                    <NavLink to="/blog" className={({ isActive }) =>
+                        `relative font-semibold hover:text-customBlue group ${isActive ? "text-customBlue" : ""}`}>
                         المدونة
+                        <span
+                            className="absolute left-0 right-0 -bottom-2 h-[2px] bg-customBlue scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                     </NavLink>
-                    <NavLink to="/"
-                        className={({ isActive }) =>
-                            `hover:text-customBlue font-bold hover:border-b-2 border-customBlue pb-1 ${isActive ? "text-customBlue border-b-2 border-customBlue" : ""
-                            }`
-                        }>
+                    <NavLink to="/" className={({ isActive }) =>
+                        `relative font-semibold hover:text-customBlue group ${isActive ? "text-customBlue" : ""}`}>
                         الرئيسية
+                        <span
+                            className="absolute left-0 right-0 -bottom-2 h-[2px] bg-customBlue scale-x-0 transition-transform duration-300 group-hover:scale-x-100"></span>
                     </NavLink>
                 </div>
 
                 {/* Burger Icon */}
                 <button
-                    className="text-4xl flex justify-center items-center px-4 py-4 text-white lg:hidden"
+                    className="text-3xl flex text-white lg:hidden"
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                     {isMenuOpen ? "✕" : "☰"}
@@ -49,51 +52,40 @@ export default function Header() {
                 {/* Dropdown Menu */}
                 <div
                     className={`${isMenuOpen ? "flex" : "hidden"
-                        } absolute w-full shadow-lg flex-col p-3 text-center rounded-xl bg-white z-10 top-20 gap-3 lg:static lg:flex lg:flex-row lg:shadow-none lg:bg-transparent lg:w-auto lg:p-0`}
-                >
+                        } absolute w-full shadow-lg flex-col p-3 text-center rounded-xl bg-[#fcfcfc] top-[53px] gap-3 lg:gap-6 lg:static lg:flex lg:flex-row lg:shadow-none lg:bg-transparent lg:w-auto lg:p-0 lg:text-white lg:font-bold`}>
+                    <Link to="/" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        الرئيسية
+                    </Link>
+                    <hr className="lg:hidden"/>
+                    <Link to="/aboutus" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        من نحن
+                    </Link>
+                    <hr className="lg:hidden"/>
+                    <Link to="/blog" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        المدونة
+                    </Link>
+                    <hr className="lg:hidden"/>
+                    <Link to="/jobs" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        الوظائف
+                    </Link>
+                    <hr className="lg:hidden"/>
                     {user ? (
                         <>
-                            <Link to="/" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                الرئيسية
-                            </Link>
-                            <hr />
-                            <Link to="/aboutus" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                من نحن
-                            </Link>
-                            <hr />
-                            <Link to="/blog" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                المدونة
-                            </Link>
-                            <hr />
-                            <Link to="/profile" className="lg:text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            <Link to="/profile" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 حسابي
                             </Link>
-                            <hr />
-                            <button className="lg:text-white" 
-                            onClick={() => { signOutUser(); setIsMenuOpen(!isMenuOpen); }}>
+                            <hr className="lg:hidden"/>
+                            <button onClick={() => { signOutUser(); setIsMenuOpen(!isMenuOpen); }}>
                                 تسجيل خروج
                             </button>
                         </>
                     ) : (
                         <>
-                            <Link to="/" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                الرئيسية
-                            </Link>
-                            <hr />
-                            <Link to="/aboutus" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                من نحن
-                            </Link>
-                            <hr />
-                            <Link to="/blog" className="lg:p-2 lg:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                المدونة
-                            </Link>
-                            <hr />
-                            <Link to="/login" className="lg:text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            <Link to="/login" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 تسجيل الدخول
                             </Link>
-                            <hr />
-                            <Link to="/register" className="lg:text-white" 
-                            onClick={() => { signOutUser(); setIsMenuOpen(!isMenuOpen); }}>
+                            <hr className="lg:hidden"/>
+                            <Link to="/register" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 التسجيل
                             </Link>
                         </>
