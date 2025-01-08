@@ -104,12 +104,12 @@ export default function SignUp() {
                         تسجيل حساب
                     </button>
 
-                    <p className="mt-4 text-center text-sm text-gray-600">
+                    <div className="mt-4 text-center text-sm text-gray-600">
                         لديك حساب بالفعل ؟
                         <Link to="/login" className="text-blue-500 hover:text-blue-700">
                             تسجيل الدخول
                         </Link>
-                    </p>
+                    </div>
                 </Form>
             </Formik>
         </div>

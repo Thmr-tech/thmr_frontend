@@ -40,7 +40,6 @@ const JobApplication = () => {
                             onChange={handleChange}
                             required
                             className="w-full p-2 border rounded"
-                            placeholder="أدخل اسمك الكامل"
                         />
                     </div>
 
@@ -53,7 +52,6 @@ const JobApplication = () => {
                             onChange={handleChange}
                             required
                             className="w-full p-2 border rounded"
-                            placeholder="example@example.com"
                         />
                     </div>
 
@@ -66,7 +64,6 @@ const JobApplication = () => {
                             onChange={handleChange}
                             required
                             className="w-full p-2 border rounded"
-                            placeholder="أدخل رقم هاتفك"
                         />
                     </div>
 
@@ -79,7 +76,6 @@ const JobApplication = () => {
                             onChange={handleChange}
                             required
                             className="w-full p-2 border rounded"
-                            placeholder="أدخل المؤهل"
                         />
                     </div>
 
@@ -92,7 +88,6 @@ const JobApplication = () => {
                             onChange={handleChange}
                             required
                             className="w-full p-2 border rounded"
-                            placeholder="أدخل التخصص"
                         />
                     </div>
 
@@ -105,7 +100,6 @@ const JobApplication = () => {
                             onChange={handleChange}
                             required
                             className="w-full p-2 border rounded"
-                            placeholder="أدخل سنوات الخبرة "
                         />
                     </div>
 
@@ -127,7 +121,6 @@ const JobApplication = () => {
                             value={formData.message}
                             onChange={handleChange}
                             className="w-full p-2 border rounded"
-                            placeholder="اكتب رسالتك هنا..."
                         ></textarea>
                     </div>
 

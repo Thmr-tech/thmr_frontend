@@ -49,7 +49,7 @@ export default function Login() {
                 validateOnBlur={false}
             >
                 <Form noValidate className="text-right flex flex-col gap-[20px] rounded-[1rem] border-[1px] w-[330px] px-7 py-7 mx-auto bg-[#fcfcfc]">
-                <p className="text-center font-bold mb-5 text-lg text-customBlue">تسجيل الدخول</p>
+                    <p className="text-center font-bold mb-5 text-lg text-customBlue">تسجيل الدخول</p>
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium">الإيميل</label>
                         <Field type="text" id="email" name="email"
@@ -69,19 +69,19 @@ export default function Login() {
                     </div>
 
                     <ErrorMessage name="Firebase">
-                        {msg => <div className="text-red-500" style={{direction:'rtl'}}>{msg}</div>}
+                        {msg => <div className="text-red-500" style={{ direction: 'rtl' }}>{msg}</div>}
                     </ErrorMessage>
 
                     <button type="submit" className="w-full bg-customBlue text-white py-2 rounded-md focus:outline-none focus:ring-2">
                         تسجيل دخول
                     </button>
 
-                    <p className="mt-4 text-center text-sm text-gray-600">
+                    <div className="mt-4 text-center text-sm text-gray-600">
                         ليس لديك حساب ؟
                         <Link to="/register" className="text-blue-500 hover:text-blue-700">
-                            تسجيل حساب جديد
+                            تسجيل حساب جديد  
                         </Link>
-                    </p>
+                    </div>
                 </Form>
             </Formik>
         </div>
