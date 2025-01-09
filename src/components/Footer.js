@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import logo from "../assets/images/logo.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
+
 
 
 export default function Footer() {
@@ -19,7 +22,7 @@ export default function Footer() {
                             <p>الهاتف</p>
                             <p>+966 555 360 417</p>
                             <p>البريد الإلكتروني</p>
-                            <p>thmrtech@gmail.com</p>
+                            <p>thmr@thmr.sa</p>
                         </div>
                     </div>
 
@@ -28,8 +31,8 @@ export default function Footer() {
                         <a href="#" className="hover:text-blue-500 transition duration-300">
                             <i className="fab fa-linkedin"></i>
                         </a>
-                        <a href="#" className="hover:text-blue-500 transition duration-300">
-                            <i className="fab fa-twitter"></i>
+                        <a href="#" className="hover:text-black transition duration-300">
+                            <FontAwesomeIcon icon={faXTwitter} />
                         </a>
                         <a href="#" className="hover:text-pink-500 transition duration-300">
                             <i className="fab fa-instagram"></i>
@@ -47,7 +50,7 @@ export default function Footer() {
                     </p>
                 </div>
                 <hr />
-                <p className='text-right mt-5' style={{direction:'rtl'}}>
+                <p className='text-right mt-5' style={{ direction: 'rtl' }}>
                     إن شركة حلول ثمر للتصميم هي شركة ذات مسؤولية محدودة مسجلة بالمملكة العربية السعودية وتعمل وفق أنظمتها وتهدف إلى تقديم حلول رقمية في النشاطات الإدارية والمالية الخاصة بالصناديق العائلية ولا تقدم أي مشورة أو توجيه في الأمور الخاصة بالصناديق. كما أن البنية النهائية لخدمات المنصة والتطبيق ليست بالضرورة ستكون متوفرة بالنموذج الاولي الذي نعمل على بنائه.
                 </p>
             </div>

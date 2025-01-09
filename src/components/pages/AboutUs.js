@@ -37,7 +37,7 @@ export default function AboutUs() {
                     <p className="text-gray-700 leading-7">
                         نسعد بخدمتكم والرد على استفساراتكم عبر:
                         <br />
-                        <strong className="font-bold">البريد الإلكتروني:</strong> thmrtech@gmail.com
+                        <strong className="font-bold">البريد الإلكتروني:</strong> thmr@thmr.sa
                     </p>
                 </section>
 
