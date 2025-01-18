@@ -1,41 +1,60 @@
-import React, {useState} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useAuth } from "../context/AuthContext";
+import axios from 'axios';
+import { AuthContext } from "../context/AuthContext";
 import logo from "../../assets/images/logo.png";
 
 
 const initialValues = {
-    email: "",
-    password: "",
-    Firebase: ''
-};
+    email: '',
+    password: '',
+    non_field_errors: ''
+}
 
 const validationSchema = Yup.object({
     email: Yup.string()
-        .required("هذا الحقل مطلوب")
-        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "صيغة الايميل غير صحيحه"),
+        .required('required')
+        .matches(
+            /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+            'Invalid email format'
+        ),
 
-    password: Yup.string().required("هذا الحقل مطلوب"),
+    password: Yup.string()
+        .required('required')
+        .min(6, 'Password Incorrect')
+        .matches(/[0-9]/, 'Password Incorrect')
+        .matches(/[a-z]/, 'Password Incorrect')
+        .matches(/[A-Z]/, 'Password Incorrect')
+        .matches(/[^\w]/, 'Password Incorrect')
 });
 
 export default function Login() {
-    const { signIn } = useAuth();
+    const [passwordType, setPasswordType] = useState("password");
+    const [passwordIcon, setPasswordIcon] = useState(faEyeSlash);
     const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
 
+    const showPassword = () => {
+        setPasswordType(passwordType === "password" ? "text" : "password");
+        setPasswordIcon(passwordIcon === faEye ? faEyeSlash : faEye);
+    };
+
     const onSubmit = async (values, { setErrors }) => {
-        setIsSubmitting(true);
         try {
-            const { email, password } = values;
-            await signIn(email, password);
-            navigate("/");
+            const response = await axios.post('auth/token/login', values);
+            login(response)
+            console.log('login successful', response);
+            navigate('/');
         } catch (error) {
-            setErrors({ Firebase: error });
-        } finally {
-            setIsSubmitting(false);
+            if (error.response && error.response.data) {
+                setErrors(error.response.data);
+            }
         }
     };
 
@@ -65,8 +84,10 @@ export default function Login() {
 
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium">كلمة المرور</label>
-                        <Field type="password" id="password" name="password"
-                            className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#008291]" />
+                        <div className="flex items-center">
+                            <FontAwesomeIcon icon={passwordIcon} className='absolute pl-2 text-black opacity-40' onClick={showPassword} />
+                            <Field type={passwordType} name="password" id="password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" />
+                        </div>
                         <ErrorMessage name="password">
                             {(msg) => <div className="text-red-500">{msg}</div>}
                         </ErrorMessage>

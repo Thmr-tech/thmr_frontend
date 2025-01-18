@@ -1,105 +1,72 @@
-import React, { createContext, useState, useContext } from "react";
-import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-    updateProfile,
-    signInWithPopup
-} from "firebase/auth";
-import { auth, provider } from "../firebase";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { createContext, useState, useEffect } from "react";
+import axios from 'axios';
 
 
-const AuthContext = createContext();
-
-const errorMessages = {
-    "auth/email-already-in-use": "البريد الإلكتروني مستخدم بالفعل.",
-    "auth/invalid-email": "البريد الإلكتروني غير صالح.",
-    "auth/weak-password": "كلمة المرور ضعيفة جدًا.",
-    "auth/user-not-found": "لم يتم العثور على مستخدم بهذا البريد الإلكتروني.",
-    "auth/wrong-password": "كلمة المرور غير صحيحة.",
-    "auth/network-request-failed": "فشل الاتصال بالشبكة. يرجى المحاولة مرة أخرى.",
-    "auth/invalid-credential": "اسم المستخدم او كلمة المرور غير صحيحه"
-};
+export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const navigate = useNavigate();
+    const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn")
+        ? JSON.parse(localStorage.getItem("isLoggedIn"))
+        : false
+    );
+    const [authToken, setAuthToken] = useState(localStorage.getItem("authToken")
+        ? JSON.parse(localStorage.getItem("authToken"))
+        : null
+    );
+    const [userId, setUserId] = useState();
 
-    // useEffect(() => {
-    //     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    //         if (currentUser) {
-    //             setUser(currentUser);
-    //         } else {
-    //             setUser(null);
-    //         }
-    //     });
-
-    //     return () => unsubscribe();
-    // }, []);
-
-    // console.log('user', user)
-
-    const signUp = async (email, password, username) => {
+    const login = async (response) => {
         try {
-            const userCredential = await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password,
-            );
-            console.log('userCredential', userCredential)
-            const createdUser = userCredential.user;
-
-            await updateProfile(createdUser, { displayName: username });
-            setUser({ ...createdUser, displayName: username });
+            const token = response.data.auth_token;
+            setAuthToken(token);
+            setIsLoggedIn(true);
         } catch (error) {
-            const errorMessage = errorMessages[error.code] || "حدث خطأ غير متوقع.";
-            throw errorMessage;
+            console.error("Login failed:", error);
         }
     };
 
-
-    const signIn = async (email, password) => {
-        try {
-            const userCredential = await signInWithEmailAndPassword(
-                auth,
-                email,
-                password,
-            );
-            setUser(userCredential.user);
-        } catch (error) {
-            console.log(error)
-            const errorMessage = errorMessages[error.code] || "حدث خطأ غير متوقع.";
-            throw errorMessage;
-        }
+    const logout = () => {
+        setAuthToken(null);
+        localStorage.removeItem("authToken");
+        setIsLoggedIn(false);
     };
 
-    const signOutUser = async () => {
-        try {
-            await signOut(auth);
-            setUser(null);
-            navigate("/");
-        } catch (error) {
-            console.log(error)
-        }
-    };
+    useEffect(() => {
+        localStorage.setItem("isLoggedIn", JSON.stringify(isLoggedIn));
+        localStorage.setItem("authToken", JSON.stringify(authToken));
+    }, [isLoggedIn, authToken]);
 
-    const signInWithGoogle = async () => {
-        try {
-            const result = await signInWithPopup(auth, provider);
-            setUser(result.user);
-            toast.success("تم تسجيل الدخول باستخدام Google!");
-        } catch (error) {
-            toast.error("حدث خطأ أثناء تسجيل الدخول باستخدام Google.");
-        }
-    };
+    useEffect(() => {
+        const fetchUserId = async () => {
+            if (isLoggedIn && authToken) {
+                try {
+                    const response = await axios.get('/auth/users/me/', {
+                        headers: {
+                            Authorization: `Token ${authToken}`,
+                        },
+                    });
+                    setUserId(response.data.id);
+                    console.log('User ID fetched:', response.data.id);
+                } catch (error) {
+                    console.error('Error fetching user ID:', error);
+                }
+            }
+        };
+
+        fetchUserId();
+    }, [authToken, isLoggedIn]);
 
     return (
-        <AuthContext.Provider value={{ user, signUp, signIn, signOutUser, signInWithGoogle }}>
+        <AuthContext.Provider
+            value={{
+                isLoggedIn,
+                login,
+                logout,
+                authToken,
+                userId
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
 };
-
-export const useAuth = () => useContext(AuthContext);

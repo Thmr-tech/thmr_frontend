@@ -1,11 +1,28 @@
-import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate, NavLink } from "react-router-dom";
+import { AuthContext } from './context/AuthContext';
+import axios from 'axios';
 import logo from "../assets/images/logo.png";
 
 export default function Header() {
+    const { authToken, logout } = useContext(AuthContext);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { user, signOutUser } = useAuth();
+    const navigate = useNavigate();
+
+
+    const handleLogout = async () => {
+        try {
+            await axios.post('auth/token/logout', null, {
+                headers: { 'Authorization': `Token ${authToken}` }
+            });
+            logout();
+            navigate("/");
+        } catch (error) {
+            if (error.response && error.response.data) {
+                console.log(error.response.data);
+            }
+        }
+    };
 
     return (
         <div className="absolute w-full max-w-[1890px] mx-auto z-10 px-4 py-3 lg:py-5 lg:px-10">
@@ -69,13 +86,13 @@ export default function Header() {
                         الوظائف
                     </Link>
                     <hr className="lg:hidden"/>
-                    {user ? (
+                    {authToken ? (
                         <>
                             <Link to="/profile" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 حسابي
                             </Link>
                             <hr className="lg:hidden"/>
-                            <button onClick={() => { signOutUser(); setIsMenuOpen(!isMenuOpen); }}>
+                            <button onClick={handleLogout}>
                                 تسجيل خروج
                             </button>
                         </>
