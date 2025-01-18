@@ -4,14 +4,28 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import logo from "../../assets/images/logo.png";
 import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 
 
 export default function SignUp() {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [signupType, setSignupType] = useState("manager");
+    const [passwordType, setPasswordType] = useState("password");
+    const [passwordIcon, setPasswordIcon] = useState(faEyeSlash);
+    const [password2Type, setPassword2Type] = useState("password");
+    const [password2Icon, setPassword2Icon] = useState(faEyeSlash);
 
-    console.log(signupType)
+    const showPassword = () => {
+        setPasswordType(passwordType === "password" ? "text" : "password");
+        setPasswordIcon(passwordIcon === faEye ? faEyeSlash : faEye);
+    };
+
+    const showPassword2 = () => {
+        setPassword2Type(password2Type === "password" ? "text" : "password");
+        setPassword2Icon(password2Icon === faEye ? faEyeSlash : faEye);
+    };
 
     const initialValues = {
         email: "",
@@ -26,60 +40,58 @@ export default function SignUp() {
         signup_type: signupType
     };
 
-    const validationSchema = Yup.object({
-        email: Yup.string()
-            .required("هذا الحقل مطلوب")
-            .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "صيغة الايميل غير صحيحه"),
+    const getValidationSchema = (signupType) => {
+        return Yup.object({
+            email: Yup.string()
+                .required("هذا الحقل مطلوب")
+                .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "صيغة الايميل غير صحيحه"),
 
-        full_name: Yup.string().required("هذا الحقل مطلوب"),
+            full_name: Yup.string().required("هذا الحقل مطلوب"),
 
-        national_id: Yup.string()
-            .required("هذا الحقل مطلوب")
-            .matches(/^\d{10}$/, "رقم الهوية الوطنية يجب أن يكون مكونًا من 10 أرقام"),
+            national_id: Yup.string()
+                .required("هذا الحقل مطلوب")
+                .matches(/^\d{10}$/, "رقم الهوية الوطنية يجب أن يكون مكونًا من 10 أرقام"),
 
-        telephone: Yup.string()
-            .required("هذا الحقل مطلوب")
-            .matches(/^\d{10}$/, "رقم الهاتف يجب أن يكون مكونًا من 10 أرقام"),
+            telephone: Yup.string()
+                .required("هذا الحقل مطلوب")
+                .matches(/^\d{10}$/, "رقم الهاتف يجب أن يكون مكونًا من 10 أرقام"),
 
-        family_funds_box_name: Yup.string()
-            .when(signupType, {
+            family_funds_box_name: Yup.string().when("signup_type", {
                 is: "manager",
                 then: (schema) => schema.required("هذا الحقل مطلوب"),
                 otherwise: (schema) => schema.notRequired(),
             }),
 
-        family_funds_box_number: Yup.string().required("هذا الحقل مطلوب"),
+            family_funds_box_number: Yup.string().required("هذا الحقل مطلوب"),
 
-        family_funds_regulations: Yup.mixed()
-            .when(signupType, {
+            family_funds_regulations: Yup.mixed().when("signup_type", {
                 is: "manager",
                 then: (schema) =>
-                    schema.required("هذا الحقل مطلوب").test(
-                        "fileType",
-                        "الملف يجب أن يكون بصيغة PDF أو Word",
-                        (value) =>
-                            value &&
-                            ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"].includes(value.type)
-                    ),
+                    schema
+                        .required("هذا الحقل مطلوب")
+                        .test(
+                            "fileType",
+                            "الملف يجب أن يكون بصيغة PDF أو Word",
+                            (value) =>
+                                value &&
+                                ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"].includes(value.type)
+                        ),
                 otherwise: (schema) => schema.notRequired(),
             }),
 
-        password: Yup.string()
-            .required('هذا الحقل مطلوب')
-            .min(6, 'كلمة المرور قصيرة . يجب ان تتكون من ٦ خانات على الاقل')
-            .matches(/[0-9]/, 'كلمة المرور يجب ان تحتوي علي رقم')
-            .matches(/[a-z]/, 'كلمة المرور يجب ان تحتوي على حرف صغير')
-            .matches(/[A-Z]/, 'كلمة المرور يجب ان تحتوي على حرف كبير')
-            .matches(/[^\w]/, 'يجب ان تحتوي كلمة المرور على رمز واحد مميز على الاقل'),
+            password: Yup.string()
+                .required("هذا الحقل مطلوب")
+                .min(6, "كلمة المرور قصيرة . يجب ان تتكون من ٦ خانات على الاقل")
+                .matches(/[0-9]/, "كلمة المرور يجب ان تحتوي علي رقم")
+                .matches(/[a-z]/, "كلمة المرور يجب ان تحتوي على حرف صغير")
+                .matches(/[A-Z]/, "كلمة المرور يجب ان تحتوي على حرف كبير")
+                .matches(/[^\w]/, "يجب ان تحتوي كلمة المرور على رمز واحد مميز على الاقل"),
 
-        re_password: Yup.string()
-            .required("هذا الحقل مطلوب")
-            .oneOf([Yup.ref("password"), null], "كلمتا المرور غير متطابقتين"),
-
-        signup_type: Yup.string()
-            .required("نوع التسجيل مطلوب")
-            .oneOf(["manager", "member"], "نوع التسجيل غير صالح")
-    });
+            re_password: Yup.string()
+                .required("هذا الحقل مطلوب")
+                .oneOf([Yup.ref("password"), null], "كلمتا المرور غير متطابقتين"),
+        });
+    };
 
     const onSubmit = async (values, { setErrors }) => {
         console.log('values', values)
@@ -129,7 +141,7 @@ export default function SignUp() {
             <Formik
                 initialValues={initialValues}
                 onSubmit={onSubmit}
-                validationSchema={validationSchema}
+                validationSchema={() => getValidationSchema(signupType)}
                 validateOnChange={true}
                 validateOnBlur={true}
             >
@@ -169,7 +181,7 @@ export default function SignUp() {
                         </div>
 
                         <div>
-                            <label htmlFor="full_name" className="text-sm font-medium">الإسم الرباعي</label>
+                            <label htmlFor="full_name" className="text-sm font-medium mb-2">الإسم الرباعي</label>
                             <Field type="text" id="full_name" name="full_name"
                                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#008291]" />
                             <ErrorMessage name="full_name">
@@ -178,7 +190,7 @@ export default function SignUp() {
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium">الإيميل</label>
+                            <label htmlFor="email" className="block text-sm font-medium mb-2">الإيميل</label>
                             <Field type="text" id="email" name="email"
                                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#008291]" />
                             <ErrorMessage name="email">
@@ -187,7 +199,7 @@ export default function SignUp() {
                         </div>
 
                         <div>
-                            <label htmlFor="national_id" className="block text-sm font-medium">رقم الهوية</label>
+                            <label htmlFor="national_id" className="block text-sm font-medium mb-2">رقم الهوية</label>
                             <Field type="text" id="national_id" name="national_id"
                                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#008291]" />
                             <ErrorMessage name="national_id">
@@ -196,7 +208,7 @@ export default function SignUp() {
                         </div>
 
                         <div>
-                            <label htmlFor="telephone" className="block text-sm font-medium">رقم الهاتف</label>
+                            <label htmlFor="telephone" className="block text-sm font-medium mb-2">رقم الهاتف</label>
                             <Field type="text" id="telephone" name="telephone"
                                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#008291]" />
                             <ErrorMessage name="telephone">
@@ -206,7 +218,7 @@ export default function SignUp() {
 
                         {signupType === "manager" && (
                             <div>
-                                <label htmlFor="family_funds_box_name" className="block text-sm font-medium">
+                                <label htmlFor="family_funds_box_name" className="block text-sm font-medium mb-2">
                                     اسم الصندوق
                                 </label>
                                 <Field
@@ -222,7 +234,7 @@ export default function SignUp() {
                         )}
 
                         <div>
-                            <label htmlFor="family_funds_box_number" className="block text-sm font-medium">رقم رخصة الصندوق</label>
+                            <label htmlFor="family_funds_box_number" className="block text-sm font-medium mb-2">رقم رخصة الصندوق</label>
                             <Field type="text" id="family_funds_box_number" name="family_funds_box_number"
                                 className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#008291]" />
                             <ErrorMessage name="family_funds_box_number">
@@ -232,7 +244,7 @@ export default function SignUp() {
 
                         {signupType === "manager" && (
                             <div>
-                                <label htmlFor="family_funds_regulations" className="block text-sm font-medium">
+                                <label htmlFor="family_funds_regulations" className="block text-sm font-medium mb-2">
                                     (pdf / word) اللائحة الاساسية للصندوق
                                 </label>
                                 <input
@@ -253,18 +265,22 @@ export default function SignUp() {
                         )}
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium">كلمة المرور</label>
-                            <Field type="password" id="password" name="password"
-                                className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#008291]" />
+                            <label htmlFor="password" className="block text-sm font-medium mb-2">كلمة المرور</label>
+                            <div className="flex items-center">
+                                <FontAwesomeIcon icon={passwordIcon} className='absolute pl-2 text-black opacity-40' onClick={showPassword} />
+                                <Field type={passwordType} name="password" id="password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10" />
+                            </div>
                             <ErrorMessage name="password">
                                 {(msg) => <div className="text-red-500">{msg}</div>}
                             </ErrorMessage>
                         </div>
 
                         <div>
-                            <label htmlFor="re_password" className="block text-sm font-medium">إعادة كلمة المرور</label>
-                            <Field type="password" id="re_password" name="re_password"
-                                className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#008291]" />
+                            <label htmlFor="re_password" className="block text-sm font-medium mb-2">تأكيد كلمة المرور</label>
+                            <div className="flex items-center">
+                                <FontAwesomeIcon icon={password2Icon} className='absolute pl-2 text-black opacity-40' onClick={showPassword2} />
+                                <Field type={password2Type} name="re_password" id="re_password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10" />
+                            </div>
                             <ErrorMessage name="re_password">
                                 {(msg) => <div className="text-red-500">{msg}</div>}
                             </ErrorMessage>

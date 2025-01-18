@@ -9,6 +9,8 @@ import Blog from "./components/Blog";
 import UserProfile from "./components/UserProfile";
 import JobApplication from "./components/JobApplication";
 import AccountActivate from "./components/auth/AccountActivate";
+import PasswordForget from "./components/auth/PasswordForget";
+import PasswordReset from "./components/auth/PasswordReset";
 
 const Router = () => {
     const location = useLocation();
@@ -26,6 +28,8 @@ const Router = () => {
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/jobs" element={<JobApplication />} />
                 <Route path="/activate/:uid/:token" element={<AccountActivate />} />
+                <Route path="/forget-password" element={<PasswordForget />} />
+                <Route path="/password/reset/confirm/:uid/:token" element={<PasswordReset />} />
             </Routes>
         </div>
     );

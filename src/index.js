@@ -8,7 +8,7 @@ import { AuthProvider } from "./components/context/AuthContext";
 import axios from 'axios';
 
 
-axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
+axios.defaults.baseURL = "https://thmr.pythonanywhere.com";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

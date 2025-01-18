@@ -19,9 +19,9 @@ export default function AccountActivate() {
     }, [uid, token]);
 
     return (
-        <div className="flex flex-col items-center text-black text-2xl text-center pt-28">
+        <div className="flex flex-col items-center text-white text-xl text-center pt-28">
             <h1>تم تفعيل حسابك بنجاح . الان يمكنك تسجيل الدخول</h1>
-            <Link className='border-2 border-black border-solid p-2 rounded-md mt-5' to='/login'>تسجيل الدخول</Link>
+            <Link className='p-2 bg-customBlue text-white rounded-md mt-2' to='/login'>تسجيل الدخول</Link>
         </div>
     );
 }
