@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -23,15 +23,19 @@ const validationSchema = Yup.object({
 export default function Login() {
     const { signIn } = useAuth();
     const navigate = useNavigate();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
 
     const onSubmit = async (values, { setErrors }) => {
+        setIsSubmitting(true);
         try {
             const { email, password } = values;
             await signIn(email, password);
             navigate("/");
         } catch (error) {
             setErrors({ Firebase: error });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -72,18 +76,19 @@ export default function Login() {
                         {msg => <div className="text-red-500" style={{ direction: 'rtl' }}>{msg}</div>}
                     </ErrorMessage>
 
-                    <button type="submit" className="w-full bg-customBlue text-white py-2 rounded-md focus:outline-none focus:ring-2">
-                        تسجيل دخول
+                    <button type="submit" className={`w-full bg-customBlue text-white py-2 rounded-md ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-customBlue'
+                        }`}>
+                        {isSubmitting ? '... إرسال' : 'تسجيل دخول'}
                     </button>
 
                     <div className="mt-4 text-center text-sm text-gray-600">
                         ليس لديك حساب ؟
                         <Link to="/register" className="text-blue-500 hover:text-blue-700">
-                            تسجيل حساب جديد  
+                            تسجيل حساب جديد
                         </Link>
                     </div>
                 </Form>
             </Formik>
-        </div>
+        </div >
     );
 }

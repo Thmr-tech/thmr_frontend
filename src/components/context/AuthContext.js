@@ -1,11 +1,10 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext } from "react";
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     signOut,
     updateProfile,
-    signInWithPopup,
-    onAuthStateChanged
+    signInWithPopup
 } from "firebase/auth";
 import { auth, provider } from "../firebase";
 import { toast } from "react-toastify";
@@ -28,29 +27,32 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (currentUser) {
-                setUser(currentUser);
-            } else {
-                setUser(null);
-            }
-        });
+    // useEffect(() => {
+    //     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    //         if (currentUser) {
+    //             setUser(currentUser);
+    //         } else {
+    //             setUser(null);
+    //         }
+    //     });
 
-        return () => unsubscribe();
-    }, []);
+    //     return () => unsubscribe();
+    // }, []);
 
-    const signUp = async (email, password, name) => {
+    // console.log('user', user)
+
+    const signUp = async (email, password, username) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(
                 auth,
                 email,
                 password,
             );
+            console.log('userCredential', userCredential)
             const createdUser = userCredential.user;
 
-            await updateProfile(createdUser, { displayName: name });
-            setUser({ ...createdUser, displayName: name });
+            await updateProfile(createdUser, { displayName: username });
+            setUser({ ...createdUser, displayName: username });
         } catch (error) {
             const errorMessage = errorMessages[error.code] || "حدث خطأ غير متوقع.";
             throw errorMessage;
@@ -94,9 +96,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider
-            value={{ user, signUp, signIn, signOutUser, signInWithGoogle }}
-        >
+        <AuthContext.Provider value={{ user, signUp, signIn, signOutUser, signInWithGoogle }}>
             {children}
         </AuthContext.Provider>
     );

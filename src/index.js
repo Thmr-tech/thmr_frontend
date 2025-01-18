@@ -5,6 +5,10 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./components/context/AuthContext";
+import axios from 'axios';
+
+// axios.defaults.baseURL = "https://thmr.pythonanywhere.com";
+axios.defaults.baseURL = "http://127.0.0.1:8000";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
