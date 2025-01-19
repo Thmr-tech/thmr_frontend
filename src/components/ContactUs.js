@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "./firebase";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import axios from 'axios';
 
 export default function ContactUs() {
     const [formData, setFormData] = useState({
@@ -23,33 +22,23 @@ export default function ContactUs() {
         setFormData({ ...formData, [name]: value });
     };
 
-    async function addPostToDB(data) {
-        try {
-            const docRef = await addDoc(collection(db, "comments"), data);
-            console.log("Document written with ID: ", docRef.id);
-            return true;
-        } catch (error) {
-            console.error("Error adding document: ", error.message);
-            return false;
-        }
-    }
-
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setFormStatus("");
 
-        // Save form data to Firestore
-        const success = await addPostToDB(formData);
-
-        if (success) {
+        try {
+            const response = await axios.post("contact", formData);
             setFormStatus("شكرا على تواصلك مع ثمر . سيتم الرد عليك قريبا");
-            setFormData({ name: "", email: "", message: "" }); // Reset the form
-        } else {
+            console.log("Response:", response.data);
+            setFormData({ name: "", email: "", message: "" }); // Reset form on success
+        } catch (err) {
+            console.error("Error:", err);
             setFormStatus("حدث خطأ غير متوقع . الرجاء المحاولة مرة اخرى");
+        } finally {
+            setIsSubmitting(false);
         }
-        setIsSubmitting(false);
     };
 
     return (

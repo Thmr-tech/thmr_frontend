@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import usePasswordToggle from '../hooks/usePasswordToggle';
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { getValidationSchema } from "./validationSchema";
 import axios from 'axios';
 import { AuthContext } from "../context/AuthContext";
 import logo from "../../assets/images/logo.png";
@@ -31,27 +31,14 @@ const initialValues = {
     non_field_errors: ''
 }
 
-const validationSchema = Yup.object({
-    email: Yup.string()
-        .required("هذا الحقل مطلوب")
-        .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "صيغة الايميل غير صحيحه"),
-
-    password: Yup.string()
-        .required('هذا الحقل مطلوب')
-        .min(6, 'كلمة المرور غير صحيحة')
-        .matches(/[0-9]/, 'كلمة المرور غير صحيحة')
-        .matches(/[a-z]/, 'كلمة المرور غير صحيحة')
-        .matches(/[A-Z]/, 'كلمة المرور غير صحيحة')
-        .matches(/[^\w]/, 'كلمة المرور غير صحيحة'),
-});
+const validationSchema = getValidationSchema(null, true);
 
 export default function Login() {
-    const [passwordType, setPasswordType] = useState("password");
-    const [passwordIcon, setPasswordIcon] = useState(faEyeSlash);
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const location = useLocation();
+    const { passwordType, passwordIcon, showPassword } = usePasswordToggle();
 
 
     useEffect(() => {
@@ -60,11 +47,6 @@ export default function Login() {
         }
     }, [location.state]);
 
-
-    const showPassword = () => {
-        setPasswordType(passwordType === "password" ? "text" : "password");
-        setPasswordIcon(passwordIcon === faEye ? faEyeSlash : faEye);
-    };
 
     const onSubmit = async (values, { setErrors }) => {
         setIsSubmitting(true);

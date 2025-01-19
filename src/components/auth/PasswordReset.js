@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from 'yup';
+import { getValidationSchema } from "./validationSchema";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import usePasswordToggle from '../hooks/usePasswordToggle';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 
 
 const notifySuccess = () => {
@@ -24,40 +23,16 @@ const notifySuccess = () => {
 }
 
 const initialValues = {
-    new_password: '',
+    password: '',
     re_password: '',
 }
 
-const validationSchema = Yup.object({
-    new_password: Yup.string()
-        .required('هذا الحقل مطلوب')
-        .min(6, 'كلمة المرور قصيرة . يجب ان تتكون من ٦ خانات على الاقل')
-        .matches(/[0-9]/, 'كلمة المرور يجب ان تحتوي علي رقم')
-        .matches(/[a-z]/, 'كلمة المرور يجب ان تحتوي على حرف صغير')
-        .matches(/[A-Z]/, 'كلمة المرور يجب ان تحتوي على حرف كبير')
-        .matches(/[^\w]/, 'يجب ان تحتوي كلمة المرور على رمز واحد مميز على الاقل'),
-
-    re_password: Yup.string()
-        .required("هذا الحقل مطلوب")
-        .oneOf([Yup.ref("new_password"), null], "كلمتا المرور غير متطابقتين")
-})
+const validationSchema = getValidationSchema(null, false, true);
 
 export default function PasswordReset() {
     const { uid, token } = useParams();
-    const [passwordType, setPasswordType] = useState("password");
-    const [passwordIcon, setPasswordIcon] = useState(faEyeSlash);
-    const [password2Type, setPassword2Type] = useState("password");
-    const [password2Icon, setPassword2Icon] = useState(faEyeSlash);
-
-    const showPassword = () => {
-        setPasswordType(passwordType === "password" ? "text" : "password");
-        setPasswordIcon(passwordIcon === faEye ? faEyeSlash : faEye);
-    };
-
-    const showPassword2 = () => {
-        setPassword2Type(password2Type === "password" ? "text" : "password");
-        setPassword2Icon(password2Icon === faEye ? faEyeSlash : faEye);
-    };
+    const { passwordType, passwordIcon, showPassword } = usePasswordToggle();
+    const { password2Type, password2Icon, showPassword2 } = usePasswordToggle();
 
     const onSubmit = async (values, { setErrors }) => {
         try {
@@ -90,15 +65,15 @@ export default function PasswordReset() {
                     {({ handleChange }) => (
                         <Form noValidate>
                             <div className="mb-4">
-                                <label htmlFor="new_password" className="block text-sm font-semibold text-gray-600 mb-2 text-right">كلمة المرور</label>
+                                <label htmlFor="password" className="block text-sm font-semibold text-gray-600 mb-2 text-right">كلمة المرور</label>
                                 <div className="flex items-center">
                                     <FontAwesomeIcon icon={passwordIcon} className='absolute pl-2 text-black opacity-40' onClick={showPassword} />
-                                    <Field type={passwordType} name="new_password" id="new_password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10"
+                                    <Field type={passwordType} name="password" id="password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10"
                                         onChange={(e) => {
                                             handleChange(e);
                                         }} />
                                 </div>
-                                <ErrorMessage name="new_password">
+                                <ErrorMessage name="password">
                                     {msg => <div className="text-red-500 text-right">{msg}</div>}
                                 </ErrorMessage>
                             </div>

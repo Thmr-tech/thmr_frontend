@@ -1,31 +1,19 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import logo from "../../assets/images/logo.png";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import usePasswordToggle from '../hooks/usePasswordToggle';
+import { getValidationSchema } from "./validationSchema";
 
 
 export default function SignUp() {
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [signupType, setSignupType] = useState("manager");
-    const [passwordType, setPasswordType] = useState("password");
-    const [passwordIcon, setPasswordIcon] = useState(faEyeSlash);
-    const [password2Type, setPassword2Type] = useState("password");
-    const [password2Icon, setPassword2Icon] = useState(faEyeSlash);
-
-    const showPassword = () => {
-        setPasswordType(passwordType === "password" ? "text" : "password");
-        setPasswordIcon(passwordIcon === faEye ? faEyeSlash : faEye);
-    };
-
-    const showPassword2 = () => {
-        setPassword2Type(password2Type === "password" ? "text" : "password");
-        setPassword2Icon(password2Icon === faEye ? faEyeSlash : faEye);
-    };
+    const { passwordType, passwordIcon, showPassword } = usePasswordToggle();
+    const { password2Type, password2Icon, showPassword2 } = usePasswordToggle();
 
     const initialValues = {
         email: "",
@@ -40,61 +28,7 @@ export default function SignUp() {
         signup_type: signupType
     };
 
-    const getValidationSchema = (signupType) => {
-        return Yup.object({
-            email: Yup.string()
-                .required("هذا الحقل مطلوب")
-                .matches(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, "صيغة الايميل غير صحيحه"),
-
-            full_name: Yup.string().required("هذا الحقل مطلوب"),
-
-            national_id: Yup.string()
-                .required("هذا الحقل مطلوب")
-                .matches(/^\d{10}$/, "رقم الهوية الوطنية يجب أن يكون مكونًا من 10 أرقام"),
-
-            telephone: Yup.string()
-                .required("هذا الحقل مطلوب")
-                .matches(/^\d{10}$/, "رقم الهاتف يجب أن يكون مكونًا من 10 أرقام"),
-
-            family_funds_box_name: Yup.string().when("signup_type", {
-                is: "manager",
-                then: (schema) => schema.required("هذا الحقل مطلوب"),
-                otherwise: (schema) => schema.notRequired(),
-            }),
-
-            family_funds_box_number: Yup.string().required("هذا الحقل مطلوب"),
-
-            family_funds_regulations: Yup.mixed().when("signup_type", {
-                is: "manager",
-                then: (schema) =>
-                    schema
-                        .required("هذا الحقل مطلوب")
-                        .test(
-                            "fileType",
-                            "الملف يجب أن يكون بصيغة PDF أو Word",
-                            (value) =>
-                                value &&
-                                ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"].includes(value.type)
-                        ),
-                otherwise: (schema) => schema.notRequired(),
-            }),
-
-            password: Yup.string()
-                .required("هذا الحقل مطلوب")
-                .min(6, "كلمة المرور قصيرة . يجب ان تتكون من ٦ خانات على الاقل")
-                .matches(/[0-9]/, "كلمة المرور يجب ان تحتوي علي رقم")
-                .matches(/[a-z]/, "كلمة المرور يجب ان تحتوي على حرف صغير")
-                .matches(/[A-Z]/, "كلمة المرور يجب ان تحتوي على حرف كبير")
-                .matches(/[^\w]/, "يجب ان تحتوي كلمة المرور على رمز واحد مميز على الاقل"),
-
-            re_password: Yup.string()
-                .required("هذا الحقل مطلوب")
-                .oneOf([Yup.ref("password"), null], "كلمتا المرور غير متطابقتين"),
-        });
-    };
-
     const onSubmit = async (values, { setErrors }) => {
-        console.log('values', values)
         setIsSubmitting(true);
         const formData = new FormData();
 
@@ -112,7 +46,6 @@ export default function SignUp() {
         });
 
         try {
-            // Send FormData with Axios
             const response = await axios.post("auth/users/", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data", // Necessary for file uploads

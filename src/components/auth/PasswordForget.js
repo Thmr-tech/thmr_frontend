@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from 'yup';
+import { getValidationSchema } from "./validationSchema";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,14 +25,7 @@ const initialValues = {
     email: '',
 }
 
-const validationSchema = Yup.object({
-    email: Yup.string()
-        .required('هذا الحقل مطلوب')
-        .matches(
-            /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
-            'صيغة الايميل غير صحيحه'
-        )
-})
+const validationSchema = getValidationSchema(null, false, false, true);
 
 
 export default function PasswordForget() {
