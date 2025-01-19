@@ -120,7 +120,7 @@ export default function SignUp() {
             });
 
             console.log("Registration successful", response);
-            navigate("/login"); // Redirect on success
+            navigate('/login', { state: { registrationSuccess: true } });
         } catch (error) {
             console.error("Error during registration", error);
 

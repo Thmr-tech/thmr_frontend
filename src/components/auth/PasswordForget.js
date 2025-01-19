@@ -3,6 +3,22 @@ import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from 'yup';
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+const notify = () => {
+    toast.success("ستصلك رسالة على بريدك الإلكتروني لإكمال عملية إعادة تعيين كلمة المرور", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
+}
 
 
 const initialValues = {
@@ -24,6 +40,7 @@ export default function PasswordForget() {
     const onSubmit = async (values, { setErrors }) => {
         try {
             const response = await axios.post('auth/users/reset_password/', values);
+            notify()
             console.log("Password reset request sent", response);
         } catch (error) {
             setErrors(error.response.data);
@@ -65,6 +82,7 @@ export default function PasswordForget() {
                     </Form>
                 </Formik>
             </div>
+            <ToastContainer rtl />
         </div>
     );
 }

@@ -5,8 +5,23 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
+
+const notifySuccess = () => {
+    toast.success("تم تغيير كلمة المرور بنجاح", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
+}
 
 const initialValues = {
     new_password: '',
@@ -52,6 +67,7 @@ export default function PasswordReset() {
                     uid,
                     token,
                 });
+            notifySuccess();
             console.log('password reset successful', response);
         } catch (error) {
             if (error.response && error.response.data) {
@@ -113,6 +129,7 @@ export default function PasswordReset() {
                     )}
                 </Formik>
             </div>
+            <ToastContainer rtl />
         </div>
     );
 }

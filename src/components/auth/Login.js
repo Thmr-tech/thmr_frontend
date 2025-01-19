@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -7,6 +7,22 @@ import * as Yup from "yup";
 import axios from 'axios';
 import { AuthContext } from "../context/AuthContext";
 import logo from "../../assets/images/logo.png";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+const notify = () => {
+    toast.success("تم ارسال تفعيل الحساب على البريد الالكتروني الرجاء تفعيل الحساب لتتمكن من تسجيل الدخول ", {
+        position: "top-right",
+        autoClose: 9000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    });
+}
 
 
 const initialValues = {
@@ -22,11 +38,11 @@ const validationSchema = Yup.object({
 
     password: Yup.string()
         .required('هذا الحقل مطلوب')
-        .min(6, 'كلمة المرور قصيرة . يجب ان تتكون من ٦ خانات على الاقل')
-        .matches(/[0-9]/, 'كلمة المرور يجب ان تحتوي علي رقم')
-        .matches(/[a-z]/, 'كلمة المرور يجب ان تحتوي على حرف صغير')
-        .matches(/[A-Z]/, 'كلمة المرور يجب ان تحتوي على حرف كبير')
-        .matches(/[^\w]/, 'يجب ان تحتوي كلمة المرور على رمز واحد مميز على الاقل'),
+        .min(6, 'كلمة المرور غير صحيحة')
+        .matches(/[0-9]/, 'كلمة المرور غير صحيحة')
+        .matches(/[a-z]/, 'كلمة المرور غير صحيحة')
+        .matches(/[A-Z]/, 'كلمة المرور غير صحيحة')
+        .matches(/[^\w]/, 'كلمة المرور غير صحيحة'),
 });
 
 export default function Login() {
@@ -35,6 +51,14 @@ export default function Login() {
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const location = useLocation();
+
+
+    useEffect(() => {
+        if (location.state?.registrationSuccess) {
+            notify();
+        }
+    }, [location.state]);
 
 
     const showPassword = () => {
@@ -114,6 +138,7 @@ export default function Login() {
                     </div>
                 </Form>
             </Formik>
+            <ToastContainer rtl />
         </div >
     );
 }
