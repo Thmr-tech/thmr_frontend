@@ -40,6 +40,8 @@ export default function PasswordReset() {
     const { uid, token } = useParams();
     const { passwordType, passwordIcon, showPassword } = usePasswordToggle();
     const { password2Type, password2Icon, showPassword2 } = usePasswordToggle();
+    const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+
 
     const onSubmit = async (values, { setErrors }) => {
         try {
@@ -80,48 +82,55 @@ export default function PasswordReset() {
                     validateOnBlur={false}
                 >
                     {({ handleChange }) => (
-                        <Form noValidate>
-                            <div className="mb-4">
-                                <label htmlFor="password" className="block text-sm font-semibold text-gray-600 mb-2 text-right">كلمة المرور</label>
+                        <Form noValidate className="text-right flex flex-col gap-[20px]">
+                            <div>
+                                <label htmlFor="password" className="block text-sm font-medium mb-2">كلمة المرور</label>
                                 <div className="flex items-center">
                                     <FontAwesomeIcon icon={passwordIcon} className='absolute pl-2 text-black opacity-40' onClick={showPassword} />
-                                    <Field type={passwordType} name="password" id="password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10"
+                                    <Field
+                                        type={passwordType}
+                                        name="password"
+                                        id="password"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10"
+                                        onFocus={() => setShowPasswordValidation(true)}
+                                        onBlur={() => setShowPasswordValidation(false)}
                                         onChange={(e) => {
                                             handleChange(e);
                                             handlePasswordChange(e.target.value);
                                         }} />
                                 </div>
+                                {showPasswordValidation && (
+                                    <div className="flex flex-row-reverse gap-4 text-xs mt-1">
+                                        <div className={validationStatus.length ? 'text-green-500' : 'text-red-500'}>
+                                            ٦ خانات
+                                        </div>
+                                        <div className={validationStatus.uppercase ? 'text-green-500' : 'text-red-500'}>
+                                            حرف كبير
+                                        </div>
+                                        <div className={validationStatus.lowercase ? 'text-green-500' : 'text-red-500'}>
+                                            حرف صغير
+                                        </div>
+                                        <div className={validationStatus.number ? 'text-green-500' : 'text-red-500'}>
+                                            رقم
+                                        </div>
+                                        <div className={validationStatus.special ? 'text-green-500' : 'text-red-500'}>
+                                            رمز خاص
+                                        </div>
+                                    </div>
+                                )}
                                 <ErrorMessage name="password">
-                                    {msg => <div className="text-red-500 text-right">{msg}</div>}
+                                    {(msg) => <div className="text-red-500">{msg}</div>}
                                 </ErrorMessage>
-
-                                <div className="flex flex-row-reverse gap-4 text-xs">
-                                    <div className={validationStatus.length ? 'text-green-500' : 'text-red-500'}>
-                                        ٦ خانات
-                                    </div>
-                                    <div className={validationStatus.uppercase ? 'text-green-500' : 'text-red-500'}>
-                                        حرف كبير
-                                    </div>
-                                    <div className={validationStatus.lowercase ? 'text-green-500' : 'text-red-500'}>
-                                        حرف صغير
-                                    </div>
-                                    <div className={validationStatus.number ? 'text-green-500' : 'text-red-500'}>
-                                        رقم
-                                    </div>
-                                    <div className={validationStatus.special ? 'text-green-500' : 'text-red-500'}>
-                                        رمز خاص
-                                    </div>
-                                </div>
                             </div>
 
-                            <div className="mb-4 relative">
-                                <label htmlFor="re_password" className="block text-sm font-semibold text-gray-600 mb-2 text-right">تأكيد كلمة المرور</label>
+                            <div>
+                                <label htmlFor="re_password" className="block text-sm font-medium mb-2">تأكيد كلمة المرور</label>
                                 <div className="flex items-center">
                                     <FontAwesomeIcon icon={password2Icon} className='absolute pl-2 text-black opacity-40' onClick={showPassword2} />
                                     <Field type={password2Type} name="re_password" id="re_password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10" />
                                 </div>
                                 <ErrorMessage name="re_password">
-                                    {msg => <div className="text-red-500 text-right">{msg}</div>}
+                                    {(msg) => <div className="text-red-500">{msg}</div>}
                                 </ErrorMessage>
                             </div>
 

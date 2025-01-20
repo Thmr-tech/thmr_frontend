@@ -21,6 +21,8 @@ export default function SignUp() {
     const [signupType, setSignupType] = useState("manager");
     const { passwordType, passwordIcon, showPassword } = usePasswordToggle();
     const { password2Type, password2Icon, showPassword2 } = usePasswordToggle();
+    const [showPasswordValidation, setShowPasswordValidation] = useState(false);
+
 
     const initialValues = {
         email: "",
@@ -218,32 +220,40 @@ export default function SignUp() {
                             <label htmlFor="password" className="block text-sm font-medium mb-2">كلمة المرور</label>
                             <div className="flex items-center">
                                 <FontAwesomeIcon icon={passwordIcon} className='absolute pl-2 text-black opacity-40' onClick={showPassword} />
-                                <Field type={passwordType} name="password" id="password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10" onChange={(e) => {
-                                    handleChange(e);
-                                    handlePasswordChange(e.target.value);
-                                }} />
+                                <Field
+                                    type={passwordType}
+                                    name="password"
+                                    id="password"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10"
+                                    onFocus={() => setShowPasswordValidation(true)}
+                                    onBlur={() => setShowPasswordValidation(false)}
+                                    onChange={(e) => {
+                                        handleChange(e);
+                                        handlePasswordChange(e.target.value);
+                                    }} />
                             </div>
+                            {showPasswordValidation && (
+                                <div className="flex flex-row-reverse gap-4 text-xs mt-1">
+                                    <div className={validationStatus.length ? 'text-green-500' : 'text-red-500'}>
+                                        ٦ خانات
+                                    </div>
+                                    <div className={validationStatus.uppercase ? 'text-green-500' : 'text-red-500'}>
+                                        حرف كبير
+                                    </div>
+                                    <div className={validationStatus.lowercase ? 'text-green-500' : 'text-red-500'}>
+                                        حرف صغير
+                                    </div>
+                                    <div className={validationStatus.number ? 'text-green-500' : 'text-red-500'}>
+                                        رقم
+                                    </div>
+                                    <div className={validationStatus.special ? 'text-green-500' : 'text-red-500'}>
+                                        رمز خاص
+                                    </div>
+                                </div>
+                            )}
                             <ErrorMessage name="password">
                                 {(msg) => <div className="text-red-500">{msg}</div>}
                             </ErrorMessage>
-
-                            <div className="flex flex-row-reverse gap-4 text-xs">
-                                <div className={validationStatus.length ? 'text-green-500' : 'text-red-500'}>
-                                    ٦ خانات
-                                </div>
-                                <div className={validationStatus.uppercase ? 'text-green-500' : 'text-red-500'}>
-                                    حرف كبير
-                                </div>
-                                <div className={validationStatus.lowercase ? 'text-green-500' : 'text-red-500'}>
-                                    حرف صغير
-                                </div>
-                                <div className={validationStatus.number ? 'text-green-500' : 'text-red-500'}>
-                                    رقم
-                                </div>
-                                <div className={validationStatus.special ? 'text-green-500' : 'text-red-500'}>
-                                    رمز خاص
-                                </div>
-                            </div>
                         </div>
 
                         <div>
@@ -256,10 +266,6 @@ export default function SignUp() {
                                 {(msg) => <div className="text-red-500">{msg}</div>}
                             </ErrorMessage>
                         </div>
-
-                        <ErrorMessage name="Firebase">
-                            {msg => <div className="text-red-500" style={{ direction: 'rtl' }}>{msg}</div>}
-                        </ErrorMessage>
 
                         <button type="submit" className={`w-full bg-customBlue text-white py-2 rounded-md ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-customBlue'
                             }`}>
