@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -30,6 +30,13 @@ const initialValues = {
 const validationSchema = getValidationSchema(null, false, true);
 
 export default function PasswordReset() {
+    const [validationStatus, setValidationStatus] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false
+    });
     const { uid, token } = useParams();
     const { passwordType, passwordIcon, showPassword } = usePasswordToggle();
     const { password2Type, password2Icon, showPassword2 } = usePasswordToggle();
@@ -49,6 +56,16 @@ export default function PasswordReset() {
                 setErrors(error.response.data);
             }
         }
+    };
+
+    const handlePasswordChange = (value) => {
+        setValidationStatus({
+            length: value.length >= 6,
+            uppercase: /[A-Z]/.test(value),
+            lowercase: /[a-z]/.test(value),
+            number: /[0-9]/.test(value),
+            special: /[^\w]/.test(value)
+        });
     };
 
     return (
@@ -71,11 +88,30 @@ export default function PasswordReset() {
                                     <Field type={passwordType} name="password" id="password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10"
                                         onChange={(e) => {
                                             handleChange(e);
+                                            handlePasswordChange(e.target.value);
                                         }} />
                                 </div>
                                 <ErrorMessage name="password">
                                     {msg => <div className="text-red-500 text-right">{msg}</div>}
                                 </ErrorMessage>
+
+                                <div className="flex flex-row-reverse gap-4 text-xs">
+                                    <div className={validationStatus.length ? 'text-green-500' : 'text-red-500'}>
+                                        ٦ خانات
+                                    </div>
+                                    <div className={validationStatus.uppercase ? 'text-green-500' : 'text-red-500'}>
+                                        حرف كبير
+                                    </div>
+                                    <div className={validationStatus.lowercase ? 'text-green-500' : 'text-red-500'}>
+                                        حرف صغير
+                                    </div>
+                                    <div className={validationStatus.number ? 'text-green-500' : 'text-red-500'}>
+                                        رقم
+                                    </div>
+                                    <div className={validationStatus.special ? 'text-green-500' : 'text-red-500'}>
+                                        رمز خاص
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="mb-4 relative">

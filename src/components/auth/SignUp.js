@@ -9,6 +9,13 @@ import { getValidationSchema } from "./validationSchema";
 
 
 export default function SignUp() {
+    const [validationStatus, setValidationStatus] = useState({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false
+    });
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [signupType, setSignupType] = useState("manager");
@@ -65,6 +72,16 @@ export default function SignUp() {
         }
     };
 
+    const handlePasswordChange = (value) => {
+        setValidationStatus({
+            length: value.length >= 6,
+            uppercase: /[A-Z]/.test(value),
+            lowercase: /[a-z]/.test(value),
+            number: /[0-9]/.test(value),
+            special: /[^\w]/.test(value)
+        });
+    };
+
     return (
         <div className="flex flex-col items-center mt-8 px-6">
             <Link to="/" className="pt-3 mb-[50px]">
@@ -75,10 +92,10 @@ export default function SignUp() {
                 initialValues={initialValues}
                 onSubmit={onSubmit}
                 validationSchema={() => getValidationSchema(signupType)}
-                validateOnChange={true}
-                validateOnBlur={true}
+                validateOnChange={false}
+                validateOnBlur={false}
             >
-                {({ setFieldValue, values }) => (
+                {({ setFieldValue, handleChange }) => (
                     <Form noValidate className="text-right flex flex-col gap-[20px] rounded-[1rem] border-[1px] w-[330px] px-7 py-7 mx-auto bg-[#fcfcfc] mb-8 sm:w-[430px]">
                         <p className="text-center font-bold mb-5 text-lg text-customBlue">إنشاء حساب</p>
 
@@ -201,11 +218,32 @@ export default function SignUp() {
                             <label htmlFor="password" className="block text-sm font-medium mb-2">كلمة المرور</label>
                             <div className="flex items-center">
                                 <FontAwesomeIcon icon={passwordIcon} className='absolute pl-2 text-black opacity-40' onClick={showPassword} />
-                                <Field type={passwordType} name="password" id="password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10" />
+                                <Field type={passwordType} name="password" id="password" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-customBlue pl-10" onChange={(e) => {
+                                    handleChange(e);
+                                    handlePasswordChange(e.target.value);
+                                }} />
                             </div>
                             <ErrorMessage name="password">
                                 {(msg) => <div className="text-red-500">{msg}</div>}
                             </ErrorMessage>
+
+                            <div className="flex flex-row-reverse gap-4 text-xs">
+                                <div className={validationStatus.length ? 'text-green-500' : 'text-red-500'}>
+                                    ٦ خانات
+                                </div>
+                                <div className={validationStatus.uppercase ? 'text-green-500' : 'text-red-500'}>
+                                    حرف كبير
+                                </div>
+                                <div className={validationStatus.lowercase ? 'text-green-500' : 'text-red-500'}>
+                                    حرف صغير
+                                </div>
+                                <div className={validationStatus.number ? 'text-green-500' : 'text-red-500'}>
+                                    رقم
+                                </div>
+                                <div className={validationStatus.special ? 'text-green-500' : 'text-red-500'}>
+                                    رمز خاص
+                                </div>
+                            </div>
                         </div>
 
                         <div>
